@@ -21,6 +21,12 @@
   },
 
   "features": {
+    // Crée l'utilisateur "vscode", installe sudo et configure l'OS
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "username": "vscode",
+      "installZsh": true,
+      "upgradePackages": true
+    },
     // Installe Node.js dans le conteneur PHP
     "ghcr.io/devcontainers/features/node:1": {
       "version": "22",
@@ -28,7 +34,7 @@
     },
     // Git est essentiel
     "ghcr.io/devcontainers/features/git:1": {}
-  }
+  },
   
-  // "remoteUser": "root"
+  "remoteUser": "vscode"
 }
