@@ -1,0 +1,34 @@
+{
+  "name": "IUT - App Mobile (Full Stack)",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  "forwardPorts": [3306, 8000, 5173, 8082],
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "GitHub.copilot-chat",
+        "eamodio.gitlens",
+        "bmewburn.vscode-intelephense-client",
+        "felixfbecker.php-debug",
+        "vue.volar" 
+      ]
+    }
+  },
+
+  "features": {
+    // Installe Node.js dans le conteneur PHP
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22",
+      "pnpm": "latest"
+    },
+    // Git est essentiel
+    "ghcr.io/devcontainers/features/git:1": {}
+  }
+  
+  // "remoteUser": "root"
+}

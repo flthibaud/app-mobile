@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n api,front -c blue,green \"php -S 0.0.0.0:8000 -t api/public\" \"pnpm --dir frontend dev\"",
+    "api": "php -S 0.0.0.0:8000 -t api/public",
+    "front": "pnpm --dir frontend dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
