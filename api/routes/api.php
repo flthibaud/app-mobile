@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\PostController;
 
 Route::get('/ping', function () {
   return response()->json([
@@ -8,3 +9,5 @@ Route::get('/ping', function () {
     'time' => now()
   ]);
 });
+
+Route::apiResource('posts', PostController::class);
