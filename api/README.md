@@ -1,59 +1,144 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# AppMobile API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API REST construite avec **Laravel 12** et **PHP 8.3**, utilisant **Laravel Sanctum** pour l'authentification par token.
 
-## About Laravel
+## Prérequis
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP >= 8.2
+- Composer
+- MySQL 8
+- Docker (optionnel, via DevContainer)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Installation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+# Cloner le projet et se placer dans le dossier API
+cd api
 
-## Learning Laravel
+# Installer les dépendances
+composer install
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+# Copier le fichier d'environnement
+cp .env.example .env
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Générer la clé de l'application
+php artisan key:generate
 
-## Laravel Sponsors
+# Lancer les migrations et les seeders
+php artisan migrate --seed
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Ou en une seule commande :
 
-### Premium Partners
+```bash
+composer setup
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Environnement Docker (DevContainer)
 
-## Contributing
+Le projet inclut un DevContainer avec 3 services :
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Service   | Port | Description                    |
+|-----------|------|--------------------------------|
+| **app**   | 8000 | API Laravel (PHP 8.3-cli)      |
+| **db**    | 3306 | MySQL 8                        |
+| **adminer** | 8082 | Interface web pour la base de données |
 
-## Code of Conduct
+### Identifiants base de données
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Variable      | Valeur     |
+|---------------|------------|
+| `DB_HOST`     | db         |
+| `DB_DATABASE` | app        |
+| `DB_USERNAME` | user       |
+| `DB_PASSWORD` | password   |
 
-## Security Vulnerabilities
+## Lancer le serveur
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan serve --host=0.0.0.0 --port=8000
+```
 
-## License
+## Commandes utiles
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+# Lancer les migrations
+php artisan migrate
+
+# Réinitialiser la base et relancer les seeders
+php artisan migrate:fresh --seed
+
+# Lancer les tests
+composer test
+
+# Formater le code
+./vendor/bin/pint
+
+# Ouvrir le shell Tinker
+php artisan tinker
+
+# Vider les caches
+php artisan optimize:clear
+```
+
+## Endpoints API
+
+### Routes publiques
+
+| Méthode | URI               | Description              |
+|---------|-------------------|--------------------------|
+| GET     | `/api/ping`       | Health check             |
+| POST    | `/api/login`      | Connexion utilisateur    |
+| GET     | `/api/posts`      | Liste des posts          |
+| GET     | `/api/posts/{id}` | Détail d'un post         |
+| POST    | `/api/posts`      | Créer un post            |
+| PUT     | `/api/posts/{id}` | Modifier un post         |
+| DELETE  | `/api/posts/{id}` | Supprimer un post        |
+
+### Routes protégées (auth:sanctum)
+
+| Méthode | URI                  | Description              |
+|---------|----------------------|--------------------------|
+| POST    | `/api/logout`        | Déconnexion              |
+| GET     | `/api/user`          | Profil utilisateur       |
+| PUT     | `/api/user`          | Modifier le profil       |
+| PUT     | `/api/user/password` | Modifier le mot de passe |
+| POST    | `/api/user/avatar`   | Upload d'avatar          |
+
+### Authentification
+
+L'API utilise **Laravel Sanctum** avec des tokens Bearer. Après connexion via `POST /api/login`, inclure le token dans les requêtes protégées :
+
+```
+Authorization: Bearer <token>
+```
+
+## Modèles
+
+### User
+
+| Champ      | Type   |
+|------------|--------|
+| firstname  | string |
+| lastname   | string |
+| email      | string |
+| password   | string |
+| avatar     | string |
+
+**Relations :** `hasMany` Post
+
+### Post
+
+| Champ       | Type    |
+|-------------|---------|
+| description | string  |
+| image       | string (nullable) |
+| user_id     | foreignId |
+
+**Relations :** `belongsTo` User
+
+## Seeders
+
+Le seeder par défaut crée :
+- **10 utilisateurs** (mot de passe : `password`)
+- **50 posts** répartis aléatoirement entre les utilisateurs
