@@ -104,10 +104,12 @@
 </script>
 
 <template>
-  <div class="container mx-auto p-4">
-    <h1>Mon compte</h1>
+  <div class="bg-white">
+    <div class="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-200">
+      <h1 class="text-xl font-bold text-black">Mon compte</h1>
+    </div>
 
-    <p><NuxtLink to="/">Retour</NuxtLink></p>
+    <div class="p-4">
 
     <!-- FORMULAIRE PROFIL -->
     <section class="card">
@@ -196,6 +198,7 @@
         <button @click="takePicture">Prendre une photo</button>
       </div>
     </section>
+    </div>
   </div>
 </template>
 
@@ -208,8 +211,9 @@
   .card {
     margin-bottom: 2rem;
     padding: 1.5rem;
-    border: 1px solid #ddd;
+    border: 1px solid #7e7e7e;
     border-radius: 8px;
+    color: #7e7e7e;
   }
 
   form div {

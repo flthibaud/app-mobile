@@ -1,5 +1,16 @@
+export interface User {
+  avatar: string
+  created_at?: string;
+  email?: string;
+  email_verified_at?: string;
+  firstname?: string;
+  id?: number;
+  lastname?: string;
+  updated_at: string
+}
+
 export const useAuth = () => {
-  const user = useState<any>("user", () => null);
+  const user = useState<User | null>("user", () => null);
   const token = useState<string | null>("token", () => {
     if (import.meta.client) {
       return localStorage.getItem("token");

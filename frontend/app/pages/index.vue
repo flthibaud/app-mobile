@@ -1,32 +1,15 @@
 <script setup>
 const apiUrl = useApiUrl();
 
-const { user, logout } = useAuth();
-
 const { data: posts, pending, error } = await useFetch(`${apiUrl}/api/posts`);
 </script>
 
 <template>
-  <div class="container mx-auto p-4 max-w-2xl">
-    
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">Accueil</h1>
-      
-      <div v-if="user" class="flex items-center gap-4">
-        <span class="text-sm text-gray-600">Salut, {{ user.firstname }}</span>
-        <button @click="logout()" class="text-sm text-red-500 hover:underline">
-          Déconnexion
-        </button>
-      </div>
+  <div class="bg-white">
+
+    <div class="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-200">
+      <h1 class="text-xl font-bold text-black">Accueil</h1>
     </div>
-
-    <nav class="mb-8">
-      <ul>
-        <li><NuxtLink to="/account" class="text-blue-500 hover:underline">Mon compte</NuxtLink></li>
-      </ul>
-    </nav>
-
-    <hr class="mb-8 border-gray-200" />
 
     <div>
       
@@ -77,6 +60,5 @@ const { data: posts, pending, error } = await useFetch(`${apiUrl}/api/posts`);
         
       </div>
     </div>
-
   </div>
 </template>

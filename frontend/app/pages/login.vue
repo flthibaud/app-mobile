@@ -2,6 +2,10 @@
 import * as z from 'zod'
 import type { FormSubmitEvent, AuthFormField } from '@nuxt/ui'
 
+definePageMeta({
+  layout: 'guest'
+})
+
 const toast = useToast()
 const { login } = useAuth()
 
