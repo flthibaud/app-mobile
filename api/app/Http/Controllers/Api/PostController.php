@@ -21,7 +21,18 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+
+        $post = Post::create([
+            'title' => $request->title,
+            'body' => $request->body,
+            'user_id' => $request->user()->id,
+        ]);
+
+        return response()->json($post, 201);
     }
 
     /**
@@ -29,7 +40,8 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $post = Post::with('user')->findOrFail($id);
+        return response()->json($post);
     }
 
     /**
@@ -37,14 +49,40 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+
+        // Check if the authenticated user is the owner of the post
+        if ($request->user()->id !== $post->user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+
+        $post->update([
+            'title' => $request->title,
+            'body' => $request->body,
+        ]);
+
+        return response()->json($post);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+
+        // Check if the authenticated user is the owner of the post
+        if ($request->user()->id !== $post->user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $post->delete();
+
+        return response()->json(['message' => 'Post deleted successfully']);
     }
 }

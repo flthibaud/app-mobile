@@ -7,11 +7,7 @@ export const useAuth = () => {
     return null;
   });
 
-  const {
-    public: { APP_ENV, WEBAPI_URL, APPAPI_URL },
-  } = useRuntimeConfig();
-
-  const apiUrl = APP_ENV === "mobile" ? APPAPI_URL : WEBAPI_URL;
+  const apiUrl = useApiUrl();
 
   const login = async (email: string, password: string) => {
     try {

@@ -104,7 +104,7 @@
 </script>
 
 <template>
-  <div class="account-container">
+  <div class="container mx-auto p-4">
     <h1>Mon compte</h1>
 
     <p><NuxtLink to="/">Retour</NuxtLink></p>
