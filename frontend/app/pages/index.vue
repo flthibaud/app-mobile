@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    <h1>Dashboard</h1>
+    <h1 class="text-3xl font-bold underline">Dashboard</h1>
 
     <div v-if="user">
       <p>Bienvenue {{ user.firstname }}</p>

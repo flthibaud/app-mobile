@@ -15,7 +15,8 @@
         "eamodio.gitlens",
         "bmewburn.vscode-intelephense-client",
         "felixfbecker.php-debug",
-        "vue.volar" 
+        "vue.volar",
+        "bradlc.vscode-tailwindcss"
       ]
     }
   },
