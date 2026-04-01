@@ -1,9 +1,59 @@
 <script setup lang="ts">
+import { Share2 } from '@lucide/vue';
+import { Share } from '@capacitor/share';
+
 const router = useRouter();
 const route = useRoute();
 const { fetchPost, loading } = usePosts();
 
-const post = await fetchPost(route.params.id as string);
+const post = ref<any>(null);
+
+onMounted(async () => {
+  post.value = await fetchPost(route.params.id as string);
+});
+
+const sharePost = async () => {
+  console.log("Partager le post", post.value);
+  if (!post.value) return;
+  const author = `${post.value.user.firstname} ${post.value.user.lastname}`.trim() || 'Anonyme';
+  const text = post.value.description.length > 140
+    ? post.value.description.substring(0, 140) + '…'
+    : post.value.description;
+
+  if (import.meta.env.APP_ENV === 'web') {
+    // Utiliser l'API Web Share si disponible
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Post de ${author}`,
+          text,
+          url: window.location.href,
+        });
+        console.log('Post partagé avec succès');
+      } catch (error) {
+        console.error('Erreur lors du partage du post', error);
+      }
+    } else {
+      alert('Le partage n\'est pas supporté sur ce navigateur.');
+    }
+    return;
+  } else if (import.meta.env.APP_ENV === 'mobile') {
+    // Utiliser Capacitor Share pour les plateformes mobiles
+    try {
+      await Share.share({
+        title: `Post de ${author}`,
+        text,
+        url: window.location.href,
+        dialogTitle: 'Partager ce post',
+      });
+      console.log('Post partagé avec succès');
+    } catch (error) {
+      console.error('Erreur lors du partage du post', error);
+    }
+  } else {
+    alert('Le partage n\'est pas supporté sur cette plateforme.');
+  }
+};
 
 const formatDetailedDate = (dateString?: string) => {
   if (!dateString) return '';
@@ -63,11 +113,20 @@ const formatDetailedDate = (dateString?: string) => {
         <span class="font-bold text-gray-900">1 204</span> Vues
       </div>
 
-      <div class="flex flex-wrap gap-x-6 gap-y-2 py-4 border-b border-gray-200 text-sm text-gray-500">
-        <div class="cursor-pointer hover:underline"><span class="font-bold text-gray-900">12</span> Reposts</div>
-        <div class="cursor-pointer hover:underline"><span class="font-bold text-gray-900">4</span> Citations</div>
-        <div class="cursor-pointer hover:underline"><span class="font-bold text-gray-900">48</span> J'aime</div>
-        <div class="cursor-pointer hover:underline"><span class="font-bold text-gray-900">2</span> Signets</div>
+      <div class="flex items-center justify-between border-b border-gray-200 pb-4 mb-4">
+        <div class="flex flex-wrap gap-x-6 gap-y-2 py-4 text-sm text-gray-500">
+          <div class="cursor-pointer hover:underline"><span class="font-bold text-gray-900">12</span> Reposts</div>
+          <div class="cursor-pointer hover:underline"><span class="font-bold text-gray-900">4</span> Citations</div>
+          <div class="cursor-pointer hover:underline"><span class="font-bold text-gray-900">48</span> J'aime</div>
+          <div class="cursor-pointer hover:underline"><span class="font-bold text-gray-900">2</span> Signets</div>
+        </div>
+
+        <div>
+          <button @click="sharePost" class="flex items-center gap-1 hover:text-blue-500 transition-colors text-gray-500">
+            <Share2 class="w-4 h-4" />
+            Partager
+          </button>
+        </div>
       </div>
 
     </article>
