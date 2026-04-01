@@ -5,6 +5,9 @@ import { Share } from '@capacitor/share';
 const router = useRouter();
 const route = useRoute();
 const { fetchPost, loading } = usePosts();
+const {
+  public: { APP_ENV },
+} = useRuntimeConfig();
 
 const post = ref<any>(null);
 
@@ -13,14 +16,13 @@ onMounted(async () => {
 });
 
 const sharePost = async () => {
-  console.log("Partager le post", post.value);
   if (!post.value) return;
   const author = `${post.value.user.firstname} ${post.value.user.lastname}`.trim() || 'Anonyme';
   const text = post.value.description.length > 140
     ? post.value.description.substring(0, 140) + '…'
     : post.value.description;
 
-  if (import.meta.env.APP_ENV === 'web') {
+  if (APP_ENV === 'web') {
     // Utiliser l'API Web Share si disponible
     if (navigator.share) {
       try {
@@ -37,7 +39,7 @@ const sharePost = async () => {
       alert('Le partage n\'est pas supporté sur ce navigateur.');
     }
     return;
-  } else if (import.meta.env.APP_ENV === 'mobile') {
+  } else if (APP_ENV === 'mobile') {
     // Utiliser Capacitor Share pour les plateformes mobiles
     try {
       await Share.share({

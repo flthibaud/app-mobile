@@ -106,7 +106,7 @@
 <template>
   <div class="bg-white">
     <div class="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-200">
-      <h1 class="text-xl font-bold text-black">Mon compte</h1>
+      <h1 class="text-xl font-bold text-black">Paramètres</h1>
     </div>
 
     <div class="p-4">

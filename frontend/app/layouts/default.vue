@@ -23,7 +23,7 @@ const { user, logout } = useAuth()
           active-class="font-bold"
         >
           <span class="text-2xl">&#128100;</span>
-          <span>Mon compte</span>
+          <span>Paramètres</span>
         </NuxtLink>
       </nav>
 
