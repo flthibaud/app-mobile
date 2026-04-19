@@ -20,11 +20,22 @@ const { user, logout } = useAuth()
         </NuxtLink>
 
         <NuxtLink
+          to="/marketplace"
+          class="flex items-center gap-4 px-4 py-3 rounded-full text-xl hover:bg-gray-100 transition-colors"
+          active-class="font-bold"
+        >
+          <span class="text-2xl">
+            &#128722;
+          </span>
+          <span>Marketplace</span>
+        </NuxtLink>
+
+        <NuxtLink
           to="/account"
           class="flex items-center gap-4 px-4 py-3 rounded-full text-xl hover:bg-gray-100 transition-colors"
           active-class="font-bold"
         >
-          <span class="text-2xl">&#128100;</span>
+          <span class="text-2xl">&#9881;</span>
           <span>Paramètres</span>
         </NuxtLink>
       </nav>

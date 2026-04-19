@@ -12,8 +12,8 @@ Route::get('/ping', function () {
   ]);
 });
 
-Route::apiResource('posts', PostController::class);
-Route::apiResource('ads', AdController::class);
+Route::apiResource('posts', PostController::class)->only(['index', 'show']);
+Route::apiResource('ads', AdController::class)->only(['index', 'show']);
 
 // group routes for posts
 Route::prefix('users/{user}')->group(function () {
@@ -24,10 +24,13 @@ Route::prefix('users/{user}')->group(function () {
 Route::post('/login', [UserController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('posts', PostController::class)->except(['index', 'show']);
+    Route::apiResource('ads', AdController::class)->except(['index', 'show']);
+
     Route::post('/logout', [UserController::class, 'logout']);
     Route::get('/user', [UserController::class, 'show']);
     Route::put('/user', [UserController::class, 'update']);
     Route::put('/user/password', [UserController::class, 'updatePassword']);
-    Route::post('/user/avatar', [UserController::class, 'updateAvatar']);   
+    Route::post('/user/avatar', [UserController::class, 'updateAvatar']);
 });
 

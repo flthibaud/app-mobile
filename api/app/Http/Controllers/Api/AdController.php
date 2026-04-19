@@ -11,9 +11,24 @@ class AdController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Ad::with('user')->latest()->get();
+        $validated = $request->validate([
+            'lat' => 'nullable|numeric|between:-90,90|required_with:lng',
+            'lng' => 'nullable|numeric|between:-180,180|required_with:lat',
+        ]);
+
+        $query = Ad::with('user');
+
+        if (isset($validated['lat'], $validated['lng'])) {
+            $query->select('ads.*')
+                  ->selectRaw('DISTANCE(lat, lng, ?, ?) as distance', [$validated['lat'], $validated['lng']])
+                  ->orderBy('distance', 'asc');
+        } else {
+            $query->latest();
+        }
+
+        return response()->json($query->get());
     }
 
     /**
