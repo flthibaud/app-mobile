@@ -11,6 +11,11 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: [
         'zod',
+        '@lucide/vue',
+        '@nuxt/ui',
+        'reka-ui',
+        'reka-ui/namespaced',
+        '@capacitor/share',
       ]
     },
     plugins: [

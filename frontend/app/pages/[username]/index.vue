@@ -1,13 +1,20 @@
 <script setup lang="ts">
-const { fetchPosts } = usePosts();
-const { data: posts, pending, error } = fetchPosts();
+const route = useRoute();
+const username = route.params.username as string;
+
+const { fetchUserPosts } = usePosts();
+const { data: userPosts, pending, error } = fetchUserPosts(username);
+
+console.log('User posts:', userPosts.value);
 </script>
 
 <template>
   <div class="bg-white">
 
     <div class="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-200">
-      <h1 class="text-xl font-bold text-black">Accueil</h1>
+      <h1 class="text-xl font-bold text-black">
+        {{ username }}'s Posts
+      </h1>
     </div>
 
     <div>
@@ -23,7 +30,7 @@ const { data: posts, pending, error } = fetchPosts();
       <div v-else class="flex flex-col border border-gray-200 rounded-xl divide-y divide-gray-200 bg-white">
 
         <NuxtLink
-          v-for="post in posts"
+          v-for="post in userPosts"
           :key="post.id"
           :to="`/post/${post.id}`"
           class="p-4 hover:bg-gray-50 transition-colors cursor-pointer"

@@ -44,6 +44,14 @@ class PostController extends Controller
         return response()->json($post);
     }
 
+    public function userPosts(string $username)
+    {
+        $posts = Post::with('user')->whereHas('user', function ($query) use ($username) {
+            $query->where('username', $username);
+        })->latest()->get();
+        return response()->json($posts);
+    }
+
     /**
      * Update the specified resource in storage.
      */

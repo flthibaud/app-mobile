@@ -142,3 +142,9 @@ Authorization: Bearer <token>
 Le seeder par défaut crée :
 - **10 utilisateurs** (mot de passe : `password`)
 - **50 posts** répartis aléatoirement entre les utilisateurs
+
+## Routes
+
+```bash
+php artisan route:clear
+```

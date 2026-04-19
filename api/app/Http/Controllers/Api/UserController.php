@@ -77,7 +77,10 @@ class UserController extends Controller
         $validated = $request->validate([
             'firstname' => 'nullable|string|max:255',
             'lastname'  => 'nullable|string|max:255',
+            'username'  => ['nullable', 'string', 'max:255', 'regex:/^[^.]+$/', 'unique:users,username,' . $user->id],
             'email'     => 'required|email|unique:users,email,' . $user->id,
+        ], [
+            'username.regex' => 'Le pseudo ne peut pas contenir de point.',
         ]);
 
         $user->update($validated);

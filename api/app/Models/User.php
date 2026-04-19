@@ -22,6 +22,7 @@ class User extends Authenticatable
         'avatar',
         'firstname',
         'lastname',
+        'username',
         'email',
         'password',
     ];
@@ -52,5 +53,10 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function ads()
+    {
+        return $this->hasMany(Ad::class);
     }
 }

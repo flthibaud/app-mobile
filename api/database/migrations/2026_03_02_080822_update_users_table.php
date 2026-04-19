@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('firstname')->nullable()->after('id');
             $table->string('lastname')->nullable()->after('id');
             $table->string('avatar')->nullable()->after('id');
+            $table->string('username')->unique()->after('id');
         });
 
     }
@@ -29,6 +30,7 @@ return new class extends Migration
             $table->dropColumn('avatar');
             $table->dropColumn('lastname');
             $table->dropColumn('firstname');
+            $table->dropColumn('username');
             $table->string('name')->after('id');
         });
     }

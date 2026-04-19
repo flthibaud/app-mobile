@@ -4,75 +4,53 @@ import { Share } from '@capacitor/share';
 
 const router = useRouter();
 const route = useRoute();
-const { fetchPost, loading } = usePosts();
-const {
-  public: { APP_ENV },
-} = useRuntimeConfig();
+const { public: { APP_ENV } } = useRuntimeConfig();
+const { fetchPost } = usePosts();
 
-const post = ref<any>(null);
-
-onMounted(async () => {
-  post.value = await fetchPost(route.params.id as string);
-});
+const { data: post, pending, error } = fetchPost(route.params.id as string);
 
 const sharePost = async () => {
   if (!post.value) return;
+
   const author = `${post.value.user.firstname} ${post.value.user.lastname}`.trim() || 'Anonyme';
   const text = post.value.description.length > 140
     ? post.value.description.substring(0, 140) + '…'
     : post.value.description;
 
-  if (APP_ENV === 'web') {
-    // Utiliser l'API Web Share si disponible
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `Post de ${author}`,
-          text,
-          url: window.location.href,
-        });
-        console.log('Post partagé avec succès');
-      } catch (error) {
-        console.error('Erreur lors du partage du post', error);
-      }
+  const payload = {
+    title: `Post de ${author}`,
+    text,
+    url: window.location.href,
+  };
+
+  try {
+    if (APP_ENV === 'mobile') {
+      await Share.share({ ...payload, dialogTitle: 'Partager ce post' });
+    } else if (navigator.share) {
+      await navigator.share(payload);
     } else {
-      alert('Le partage n\'est pas supporté sur ce navigateur.');
+      alert("Le partage n'est pas supporté sur ce navigateur.");
     }
-    return;
-  } else if (APP_ENV === 'mobile') {
-    // Utiliser Capacitor Share pour les plateformes mobiles
-    try {
-      await Share.share({
-        title: `Post de ${author}`,
-        text,
-        url: window.location.href,
-        dialogTitle: 'Partager ce post',
-      });
-      console.log('Post partagé avec succès');
-    } catch (error) {
-      console.error('Erreur lors du partage du post', error);
-    }
-  } else {
-    alert('Le partage n\'est pas supporté sur cette plateforme.');
+  } catch (err) {
+    console.error('Erreur lors du partage du post', err);
   }
 };
 
 const formatDetailedDate = (dateString?: string) => {
   if (!dateString) return '';
-  const date = new Date(dateString);
   return new Intl.DateTimeFormat('fr-FR', {
     hour: '2-digit',
     minute: '2-digit',
     day: 'numeric',
     month: 'short',
-    year: 'numeric'
-  }).format(date);
+    year: 'numeric',
+  }).format(new Date(dateString));
 };
 </script>
 
 <template>
   <div class="bg-white min-h-screen pb-20">
-    
+
     <div class="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 flex items-center gap-6 border-b border-gray-200">
       <button @click="router.back()" class="p-2 hover:bg-gray-100 rounded-full transition-colors flex items-center justify-center">
         <span class="text-xl font-bold leading-none">←</span>
@@ -80,17 +58,17 @@ const formatDetailedDate = (dateString?: string) => {
       <h1 class="text-xl font-bold">Post</h1>
     </div>
 
-    <div v-if="loading" class="p-8 text-center text-gray-500">
+    <div v-if="pending" class="p-8 text-center text-gray-500">
       Chargement du post...
     </div>
-    
-    <div v-else-if="!post" class="p-8 text-center text-red-500">
+
+    <div v-else-if="error || !post" class="p-8 text-center text-red-500">
       <p class="font-bold text-lg mb-2">Oups !</p>
       <p>Ce post n'existe pas ou a été supprimé.</p>
     </div>
 
     <article v-else class="p-4">
-      
+
       <div class="flex items-center gap-3 mb-4">
         <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600 shrink-0">
           <img v-if="post.user.avatar" :src="post.user.avatar" alt="Avatar" class="w-12 h-12 rounded-full" />
@@ -98,10 +76,10 @@ const formatDetailedDate = (dateString?: string) => {
         </div>
         <div class="flex flex-col">
           <span class="font-bold text-gray-900 leading-tight hover:underline cursor-pointer">
-            {{ post.user.firstname + ' ' + post.user.lastname || 'Anonyme' }}
+            {{ post.user.firstname }} {{ post.user.lastname }}
           </span>
           <span class="text-gray-500 text-sm">
-            @{{ post.user.firstname + '_' + post.user.lastname || 'user' }}
+            @{{ post.user.firstname }}_{{ post.user.lastname }}
           </span>
         </div>
       </div>
@@ -111,7 +89,7 @@ const formatDetailedDate = (dateString?: string) => {
       </p>
 
       <div class="text-gray-500 text-base mb-4 border-b border-gray-200 pb-4">
-        {{ formatDetailedDate(post.created_at) }} · 
+        {{ formatDetailedDate(post.created_at) }} ·
         <span class="font-bold text-gray-900">1 204</span> Vues
       </div>
 

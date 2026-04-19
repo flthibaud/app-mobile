@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AdController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\UserController;
 
@@ -12,6 +13,13 @@ Route::get('/ping', function () {
 });
 
 Route::apiResource('posts', PostController::class);
+Route::apiResource('ads', AdController::class);
+
+// group routes for posts
+Route::prefix('users/{user}')->group(function () {
+    Route::get('/posts', [PostController::class, 'userPosts']);
+    Route::get('/ads', [AdController::class, 'userAds']);
+});
 
 Route::post('/login', [UserController::class, 'login']);
 
