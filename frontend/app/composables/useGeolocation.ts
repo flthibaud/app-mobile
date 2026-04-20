@@ -4,8 +4,8 @@ export interface Coords {
 }
 
 export const useGeolocation = () => {
-  const coords = ref<Coords | null>(null);
-  const error = ref<string | null>(null);
+  const coords = useState<Coords | null>('coords', () => null);
+  const error = useState<string | null>('geoError', () => null);
   const pending = ref(false);
 
   const locate = () => {

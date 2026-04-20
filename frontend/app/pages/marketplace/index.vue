@@ -22,7 +22,7 @@ const formatDistance = (km?: number) => {
 
 const createMap = async () => {
   if (!mapRef.value || map) return;
-
+  console.log(coords.value);
   const center = coords.value
     ? { lat: coords.value.lat, lng: coords.value.lng }
     : { lat: 46.603354, lng: 1.888334 };
@@ -65,8 +65,12 @@ const toggleView = async () => {
   }
 };
 
+// onMounted(() => console.log(coords.value));
+
 watch(coords, () => refresh());
-onUnmounted(() => destroyMap());
+onUnmounted(() => {
+  destroyMap()
+});
 </script>
 
 <template>
