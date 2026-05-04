@@ -1,10 +1,33 @@
 <script setup lang="ts">
+import { LocalNotifications } from '@capacitor/local-notifications'
 import { usePageTitle } from "~/composables/usePageTitle";
 
 usePageTitle('Accueil');
 
 const { fetchPosts } = usePosts();
 const { data: posts, pending, error } = fetchPosts();
+
+const sendNotification = async () => {
+  let { display } = await LocalNotifications.checkPermissions();
+  if (display !== 'granted') {
+    ({ display } = await LocalNotifications.requestPermissions());
+  }
+  if (display !== 'granted') {
+    console.warn('Notifications refusées par l’utilisateur');
+    return;
+  }
+
+  await LocalNotifications.schedule({
+    notifications: [
+      {
+        title: 'Nouveau like 👍',
+        body: 'Quelqu’un a aimé votre post',
+        id: Date.now() % 2147483647,
+        schedule: { at: new Date(Date.now() + 1000) }
+      }
+    ]
+  })
+};
 </script>
 
 <template>
@@ -47,10 +70,10 @@ const { data: posts, pending, error } = fetchPosts();
               </p>
 
               <div class="flex items-center justify-between text-gray-500 mt-3 max-w-md">
-                <button class="hover:text-blue-500">💬 12</button>
-                <button class="hover:text-green-500">🔁 4</button>
-                <button class="hover:text-red-500">❤️ 48</button>
-                <button class="hover:text-blue-500">📊 1.2k</button>
+                <button type="button" @click.prevent.stop class="hover:text-blue-500">💬 12</button>
+                <button type="button" @click.prevent.stop class="hover:text-green-500">🔁 4</button>
+                <button type="button" @click.prevent.stop="sendNotification" class="hover:text-red-500">❤️ 48</button>
+                <button type="button" @click.prevent.stop class="hover:text-blue-500">📊 1.2k</button>
               </div>
             </div>
 
