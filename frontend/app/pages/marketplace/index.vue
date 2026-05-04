@@ -2,7 +2,10 @@
 import { MapPin, Navigation } from "@lucide/vue";
 import { useAds } from "~/composables/useAds";
 import { useGeolocation } from "~/composables/useGeolocation";
+import { usePageTitle } from "~/composables/usePageTitle";
 import { GoogleMap } from '@capacitor/google-maps';
+
+usePageTitle('Marketplace');
 
 const { public: { GOOGLE_MAPS_API_KEY } } = useRuntimeConfig();
 const { coords, error: geoError, pending: geoPending, locate } = useGeolocation();
@@ -76,8 +79,7 @@ onUnmounted(() => {
 <template>
   <div class="bg-white">
 
-    <div class="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-      <h1 class="text-xl font-bold text-black">Marketplace</h1>
+    <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-end">
       <button
         class="flex items-center gap-2 text-sm px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer"
         :disabled="geoPending"

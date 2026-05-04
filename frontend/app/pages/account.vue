@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import { usePageTitle } from "~/composables/usePageTitle";
 
 definePageMeta({ middleware: "auth" });
+
+usePageTitle('Paramètres');
 
 const apiUrl = useApiUrl();
 const { public: { APP_ENV } } = useRuntimeConfig();
@@ -93,10 +96,6 @@ const takePicture = async () => {
 
 <template>
   <div class="bg-white">
-    <div class="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-200">
-      <h1 class="text-xl font-bold text-black">Paramètres</h1>
-    </div>
-
     <div v-if="!user" class="p-8 text-center text-gray-500">
       Chargement du profil...
     </div>

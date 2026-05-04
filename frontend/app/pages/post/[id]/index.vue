@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { Share2 } from '@lucide/vue';
 import { Share } from '@capacitor/share';
+import { usePageTitle } from "~/composables/usePageTitle";
 
-const router = useRouter();
+definePageMeta({ showBack: true });
+
+usePageTitle('Post');
+
 const route = useRoute();
 const { public: { APP_ENV } } = useRuntimeConfig();
 const { fetchPost } = usePosts();
@@ -50,13 +54,6 @@ const formatDetailedDate = (dateString?: string) => {
 
 <template>
   <div class="bg-white min-h-screen pb-20">
-
-    <div class="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 flex items-center gap-6 border-b border-gray-200">
-      <button @click="router.back()" class="p-2 hover:bg-gray-100 rounded-full transition-colors flex items-center justify-center">
-        <span class="text-xl font-bold leading-none">←</span>
-      </button>
-      <h1 class="text-xl font-bold">Post</h1>
-    </div>
 
     <div v-if="pending" class="p-8 text-center text-gray-500">
       Chargement du post...

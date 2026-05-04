@@ -58,6 +58,8 @@ export const useAuth = () => {
       user.value = await authFetch<User>("/api/user");
     } catch {
       user.value = null;
+      token.value = null;
+      if (import.meta.client) localStorage.removeItem("token");
     }
   };
 

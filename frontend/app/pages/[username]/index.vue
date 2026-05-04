@@ -1,21 +1,17 @@
 <script setup lang="ts">
+import { usePageTitle } from "~/composables/usePageTitle";
+
 const route = useRoute();
 const username = route.params.username as string;
 
+usePageTitle(`@${username}`);
+
 const { fetchUserPosts } = usePosts();
 const { data: userPosts, pending, error } = fetchUserPosts(username);
-
-console.log('User posts:', userPosts.value);
 </script>
 
 <template>
   <div class="bg-white">
-
-    <div class="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-200">
-      <h1 class="text-xl font-bold text-black">
-        {{ username }}'s Posts
-      </h1>
-    </div>
 
     <div>
 

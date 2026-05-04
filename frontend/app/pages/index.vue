@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { usePageTitle } from "~/composables/usePageTitle";
+
+usePageTitle('Accueil');
+
 const { fetchPosts } = usePosts();
 const { data: posts, pending, error } = fetchPosts();
 </script>
 
 <template>
   <div class="bg-white">
-
-    <div class="sticky top-0 bg-white/80 backdrop-blur-md z-10 px-4 py-3 border-b border-gray-200">
-      <h1 class="text-xl font-bold text-black">Accueil</h1>
-    </div>
 
     <div>
 

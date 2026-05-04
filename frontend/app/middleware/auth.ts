@@ -1,9 +1,11 @@
-export default defineNuxtRouteMiddleware(() => {
-  if (import.meta.client) {
-    const token = localStorage.getItem('token')
+export default defineNuxtRouteMiddleware(async () => {
+  if (!import.meta.client) return
 
-    if (!token) {
-      return navigateTo('/login')
-    }
-  }
+  const { user, token, fetchUser } = useAuth()
+
+  if (!token.value) return navigateTo('/login')
+
+  if (!user.value) await fetchUser()
+
+  if (!user.value) return navigateTo('/login')
 })
