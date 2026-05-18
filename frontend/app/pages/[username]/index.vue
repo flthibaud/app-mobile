@@ -6,8 +6,34 @@ const username = route.params.username as string;
 
 usePageTitle(`@${username}`);
 
-const { fetchUserPosts } = usePosts();
+const { fetchUserPosts, toggleLike } = usePosts();
 const { data: userPosts, pending, error } = fetchUserPosts(username);
+
+const { token } = useAuth();
+
+const onToggleLike = async (postId: number) => {
+  if (!token.value) {
+    navigateTo('/login');
+    return;
+  }
+
+  const post = userPosts.value?.find((p) => p.id === postId);
+  if (!post) return;
+
+  const wasLiked = !!post.liked_by_me;
+  post.liked_by_me = !wasLiked;
+  post.likes_count += wasLiked ? -1 : 1;
+
+  try {
+    const { liked, likes_count } = await toggleLike(postId);
+    post.liked_by_me = liked;
+    post.likes_count = likes_count;
+  } catch (e) {
+    post.liked_by_me = wasLiked;
+    post.likes_count += wasLiked ? 1 : -1;
+    console.error('toggleLike failed', e);
+  }
+};
 </script>
 
 <template>
@@ -50,10 +76,17 @@ const { data: userPosts, pending, error } = fetchUserPosts(username);
               </p>
 
               <div class="flex items-center justify-between text-gray-500 mt-3 max-w-md">
-                <button class="hover:text-blue-500">💬 12</button>
-                <button class="hover:text-green-500">🔁 4</button>
-                <button class="hover:text-red-500">❤️ 48</button>
-                <button class="hover:text-blue-500">📊 1.2k</button>
+                <button type="button" @click.prevent.stop class="hover:text-blue-500">💬 {{ post.comments_count }}</button>
+                <button type="button" @click.prevent.stop class="hover:text-green-500">🔁 0</button>
+                <button
+                  type="button"
+                  @click.prevent.stop="onToggleLike(post.id)"
+                  class="transition-colors"
+                  :class="post.liked_by_me ? 'text-red-500' : 'hover:text-red-500'"
+                >
+                  {{ post.liked_by_me ? '❤️' : '🤍' }} {{ post.likes_count }}
+                </button>
+                <button type="button" @click.prevent.stop class="hover:text-blue-500">📊 0</button>
               </div>
             </div>
 
