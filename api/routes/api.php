@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AdController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\UserController;
 
@@ -32,5 +33,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/user', [UserController::class, 'update']);
     Route::put('/user/password', [UserController::class, 'updatePassword']);
     Route::post('/user/avatar', [UserController::class, 'updateAvatar']);
+
+    Route::get('/notifications/stream', [NotificationController::class, 'stream']);
+    Route::post('/notifications', [NotificationController::class, 'store']);
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
 });
 

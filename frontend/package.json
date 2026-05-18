@@ -21,6 +21,7 @@
     "@lucide/vue": "^1.7.0",
     "@nuxt/ui": "^4.5.1",
     "@tailwindcss/vite": "^4.2.1",
+    "event-source-polyfill": "^1.0.31",
     "nuxt": "^4.3.1",
     "tailwindcss": "^4.2.1",
     "vite": "^7.3.1",

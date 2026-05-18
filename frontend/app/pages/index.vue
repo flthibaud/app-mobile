@@ -1,33 +1,15 @@
 <script setup lang="ts">
-import { LocalNotifications } from '@capacitor/local-notifications'
 import { usePageTitle } from "~/composables/usePageTitle";
+import { useLocalNotification } from "~/composables/useLocalNotification";
 
 usePageTitle('Accueil');
 
 const { fetchPosts } = usePosts();
 const { data: posts, pending, error } = fetchPosts();
 
-const sendNotification = async () => {
-  let { display } = await LocalNotifications.checkPermissions();
-  if (display !== 'granted') {
-    ({ display } = await LocalNotifications.requestPermissions());
-  }
-  if (display !== 'granted') {
-    console.warn('Notifications refusées par l’utilisateur');
-    return;
-  }
+const { notify } = useLocalNotification();
 
-  await LocalNotifications.schedule({
-    notifications: [
-      {
-        title: 'Nouveau like 👍',
-        body: 'Quelqu’un a aimé votre post',
-        id: Date.now() % 2147483647,
-        schedule: { at: new Date(Date.now() + 1000) }
-      }
-    ]
-  })
-};
+const sendNotification = () => notify('Nouveau like 👍', 'Quelqu’un a aimé votre post');
 </script>
 
 <template>
