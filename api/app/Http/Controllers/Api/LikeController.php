@@ -18,6 +18,13 @@ class LikeController extends Controller
         if ($existing) {
             $existing->delete();
             $liked = false;
+
+            Notification::where('user_id', $post->user_id)
+                ->whereNull('read_at')
+                ->where('data->type', 'like')
+                ->where('data->post_id', $post->id)
+                ->where('data->from_user_id', $user->id)
+                ->delete();
         } else {
             $post->likes()->create(['user_id' => $user->id]);
             $liked = true;

@@ -1,5 +1,6 @@
 // @ts-expect-error -- event-source-polyfill has no published types
 import { EventSourcePolyfill } from "event-source-polyfill";
+import { useLocalNotification } from "~/composables/useLocalNotification";
 
 export interface NotificationItem {
   id: number;
@@ -13,12 +14,17 @@ export interface NotificationItem {
 }
 
 export const useNotificationStream = () => {
-  const { token } = useAuth();
+  const { token, authFetch } = useAuth();
   const apiUrl = useApiUrl();
   const { notify } = useLocalNotification();
 
   const notifications = useState<NotificationItem[]>("notifications", () => []);
   const source = useState<EventSource | null>("notifications-source", () => null);
+
+  const markAsRead = (id: number) =>
+    authFetch(`/api/notifications/${id}/read`, { method: "PATCH" }).catch((e) =>
+      console.error("markAsRead failed", e),
+    );
 
   const start = () => {
     if (!import.meta.client) return;
@@ -36,6 +42,7 @@ export const useNotificationStream = () => {
 
         notifications.value = [payload, ...notifications.value];
         notify(payload.title, payload.body);
+        markAsRead(payload.id);
       } catch (e) {
         console.error("Failed to parse notification payload", e);
       }
