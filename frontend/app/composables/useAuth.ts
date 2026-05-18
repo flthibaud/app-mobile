@@ -94,6 +94,7 @@ export const useAuth = () => {
   return {
     user,
     token,
+    authFetch,
     login,
     logout,
     fetchUser,

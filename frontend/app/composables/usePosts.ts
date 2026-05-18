@@ -8,10 +8,14 @@ export interface Post {
   updated_at: string;
   user: User;
   user_id: number;
+  likes_count: number;
+  comments_count: number;
+  liked_by_me?: boolean;
 }
 
 export const usePosts = () => {
   const apiUrl = useApiUrl();
+  const { authFetch } = useAuth();
 
   const withAvatarUrl = (post: Post): Post => ({
     ...post,
@@ -23,7 +27,7 @@ export const usePosts = () => {
 
   const fetchPosts = () =>
     useAsyncData("posts", async () => {
-      const data = await $fetch<Post[]>(`${apiUrl}/api/posts`);
+      const data = await authFetch<Post[]>("/api/posts");
       return data.map(withAvatarUrl);
     });
 
@@ -33,15 +37,22 @@ export const usePosts = () => {
       const cached = cachedList?.find((p) => p.id == id);
       if (cached) return cached;
 
-      const data = await $fetch<Post>(`${apiUrl}/api/posts/${id}`);
+      const data = await authFetch<Post>(`/api/posts/${id}`);
       return withAvatarUrl(data);
     });
 
   const fetchUserPosts = (username: string | number) =>
     useAsyncData(`user-posts-${username}`, async () => {
-      const data = await $fetch<Post[]>(`${apiUrl}/api/users/${username}/posts`);
+      const data = await authFetch<Post[]>(`/api/users/${username}/posts`);
       return data.map(withAvatarUrl);
     });
 
-  return { fetchPosts, fetchPost, fetchUserPosts };
+  const toggleLike = async (postId: number) => {
+    return await authFetch<{ liked: boolean; likes_count: number }>(
+      `/api/posts/${postId}/likes`,
+      { method: "POST" }
+    );
+  };
+
+  return { fetchPosts, fetchPost, fetchUserPosts, toggleLike };
 };
