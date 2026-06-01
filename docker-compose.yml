@@ -48,6 +48,10 @@ services:
       DB_DATABASE: app
       DB_USERNAME: user
       DB_PASSWORD: password
+      # Le serveur intégré PHP est mono-processus : une connexion SSE (longue)
+      # bloquerait toutes les autres requêtes. On le fait forker plusieurs
+      # workers pour traiter les requêtes en parallèle.
+      PHP_CLI_SERVER_WORKERS: 10
     ports:
       - "8000:8000"
     depends_on:
