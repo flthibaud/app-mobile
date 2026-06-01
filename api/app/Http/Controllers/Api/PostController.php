@@ -23,9 +23,11 @@ class PostController extends Controller
         return $query;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->baseQuery()->latest()->get();
+        $perPage = min($request->integer('per_page', 12), 50);
+
+        return $this->baseQuery()->latest()->paginate($perPage);
     }
 
     public function store(Request $request)
@@ -50,14 +52,16 @@ class PostController extends Controller
         return response()->json($post);
     }
 
-    public function userPosts(string $username)
+    public function userPosts(Request $request, string $username)
     {
+        $perPage = min($request->integer('per_page', 12), 50);
+
         $posts = $this->baseQuery()
             ->whereHas('user', function ($query) use ($username) {
                 $query->where('username', $username);
             })
             ->latest()
-            ->get();
+            ->paginate($perPage);
 
         return response()->json($posts);
     }

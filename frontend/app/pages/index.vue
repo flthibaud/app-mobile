@@ -3,8 +3,10 @@ import { usePageTitle } from "~/composables/usePageTitle";
 
 usePageTitle('Accueil');
 
-const { fetchPosts, toggleLike } = usePosts();
-const { data: posts, pending, error } = fetchPosts();
+const { usePostsFeed, toggleLike } = usePosts();
+const feed = usePostsFeed();
+const { posts, pending, error, hasMore } = feed;
+const { sentinel } = useInfiniteScroll(feed);
 
 const { token } = useAuth();
 
@@ -38,12 +40,16 @@ const onToggleLike = async (postId: number) => {
 
     <div>
 
-      <div v-if="pending" class="text-center text-gray-500 py-8">
+      <div v-if="pending && !posts.length" class="text-center text-gray-500 py-8">
         Chargement des posts...
       </div>
 
-      <div v-else-if="error" class="text-center text-red-500 py-8">
+      <div v-else-if="error && !posts.length" class="text-center text-red-500 py-8">
         Impossible de charger le fil d'actualité.
+      </div>
+
+      <div v-else-if="!posts.length" class="text-center text-gray-500 py-8">
+        Aucun post pour le moment.
       </div>
 
       <div v-else class="flex flex-col border border-gray-200 rounded-xl divide-y divide-gray-200 bg-white">
@@ -90,6 +96,12 @@ const onToggleLike = async (postId: number) => {
           </div>
         </NuxtLink>
 
+      </div>
+
+      <div ref="sentinel" class="py-6 text-center text-gray-500 text-sm">
+        <span v-if="pending && posts.length">Chargement…</span>
+        <span v-else-if="error && posts.length" class="text-red-500">Erreur de chargement.</span>
+        <span v-else-if="!hasMore && posts.length">Vous avez tout vu 🎉</span>
       </div>
     </div>
   </div>
