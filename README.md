@@ -5,12 +5,13 @@ Application full-stack composée de :
 - **`api/`** — API REST **Laravel 12 / PHP 8.3** (authentification par token via Laravel Sanctum, base MySQL 8).
 - **`frontend/`** — Application **Nuxt 4** (SPA statique) packageable en application Android via **Capacitor**.
 
-Deux façons de lancer le projet :
+Plusieurs façons de lancer le projet :
 
 | Objectif | Méthode | Section |
 |----------|---------|---------|
 | Développer (hot-reload, outils) | **DevContainer** | [Développement](#développement-devcontainer) |
 | Tester / faire tourner rapidement | **Docker Compose** (build) | [Démo / test](#démo--test-docker-compose) |
+| Tester l'app mobile sur émulateur | **Docker Compose** (API) + **Capacitor** | [Version mobile](#tester-lapp-mobile-sur-émulateur-android) |
 
 ---
 
@@ -39,15 +40,16 @@ Au premier lancement, l'API attend la base, génère sa clé applicative, exécu
 
 ### Clé Google Maps (optionnel)
 
-La carte du frontend nécessite une clé Google Maps. Pour l'injecter dans le build statique, définissez la variable avant de builder (ou placez-la dans un fichier `.env` à la racine, lu par Compose) :
+La carte du frontend nécessite une clé Google Maps. Pour l'injecter dans le build statique, définissez la variable avant de builder (ou placez-la dans un fichier `.env` à la racine, lu par Compose, ou l'ajoutez directement dans `docker-compose.yml`) :
 
 ```bash
-GOOGLE_MAPS_API_KEY=VOTRE_CLE docker compose up --build
+GOOGLE_MAPS_API_KEY=VOTRE_CLE_GOOGLE_MAPS
 ```
 
 ### Commandes utiles
 
 ```bash
+docker compose up --build db api    # lancer uniquement la base + l'API
 docker compose up --build -d        # lancer en arrière-plan
 docker compose logs -f api          # suivre les logs de l'API
 docker compose exec api php artisan migrate:fresh --seed   # réinitialiser la base
@@ -56,6 +58,41 @@ docker compose down -v              # arrêter + supprimer la base (volume mysql
 ```
 
 > **Note** — Cette stack vise la démo/test : l'API est servie par le serveur PHP intégré et les fichiers uploadés (avatars) ne sont pas persistés entre rebuilds d'image. Le frontend étant statique, l'URL de l'API (`WEBAPI_URL`) est figée au build (`http://localhost:8000`) ; adaptez l'argument de build dans `docker-compose.yml` pour un autre hôte.
+
+---
+
+## Tester l'app mobile sur émulateur (Android)
+
+Capacitor emballe le frontend Nuxt dans une application Android. L'application étant exécutée sur un téléphone (virtuel), elle ne peut pas joindre l'API via `localhost` : l'émulateur Android utilise l'adresse spéciale **`10.0.2.2`** pour atteindre la machine hôte. C'est déjà configuré (`APPAPI_URL=http://10.0.2.2:8000` dans `frontend/.env`) — l'API lancée par Docker Compose sur le port `8000` est donc directement joignable.
+
+### Prérequis
+
+- **[Android Studio](https://developer.android.com/studio)** installé, avec un **émulateur (AVD)** créé et fonctionnel (menu *Device Manager*).
+- Les dépendances du frontend installées :
+
+  ```bash
+  pnpm --dir frontend install
+  ```
+
+### Lancer
+
+1. **Démarrer l'API + la base** (dans un terminal, à la racine du dépôt) :
+
+   ```bash
+   docker compose up --build db api
+   ```
+
+2. **Construire l'app mobile et la lancer sur l'émulateur** (dans un second terminal) :
+
+   ```bash
+   cd frontend
+   APP_ENV=mobile pnpm android   # build le frontend + l'injecte dans le projet Android
+   npx cap run android           # démarre l'émulateur, installe et ouvre l'app
+   ```
+
+   > `npx cap run android` propose de choisir l'émulateur à démarrer. L'app s'ouvre ensuite automatiquement et se connecte à l'API.
+
+À chaque modification du frontend, relancer la commande de l'étape 2 pour reconstruire et réinstaller l'app.
 
 ---
 
