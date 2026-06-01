@@ -1,0 +1,7 @@
+# Réglages pnpm (pnpm 10+ ne lit plus le champ "pnpm" du package.json).
+# Autorise les scripts de build des dépendances natives, sinon `pnpm install`
+# sort en erreur (ERR_PNPM_IGNORED_BUILDS) dans un environnement non interactif.
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  vue-demi: true

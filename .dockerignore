@@ -1,0 +1,22 @@
+# Dépendances et artefacts (réinstallés/régénérés dans les images)
+**/node_modules
+api/vendor
+frontend/.output
+frontend/.nuxt
+frontend/.nitro
+frontend/.data
+frontend/.cache
+frontend/dist
+
+# Projet natif Android (Capacitor) — inutile pour le build web
+frontend/android
+
+# Fichiers d'environnement locaux (secrets) — on garde les .env.example
+**/.env
+!**/.env.example
+
+# Git & divers
+.git
+.gitignore
+**/*.log
+**/.DS_Store
