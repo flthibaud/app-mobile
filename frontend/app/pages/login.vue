@@ -13,37 +13,23 @@ const fields: AuthFormField[] = [{
   name: 'email',
   type: 'email',
   label: 'Email',
-  placeholder: 'Enter your email',
+  placeholder: 'Entrez votre adresse email',
   required: true
 }, {
   name: 'password',
-  label: 'Password',
+  label: 'Mot de passe',
   type: 'password',
-  placeholder: 'Enter your password',
+  placeholder: 'Entrez votre mot de passe',
   required: true
 }, {
   name: 'remember',
-  label: 'Remember me',
+  label: 'Se souvenir de moi',
   type: 'checkbox'
 }]
 
-const providers = [{
-  label: 'Google',
-  icon: 'i-simple-icons-google',
-  onClick: () => {
-    toast.add({ title: 'Google', description: 'Login with Google' })
-  }
-}, {
-  label: 'GitHub',
-  icon: 'i-simple-icons-github',
-  onClick: () => {
-    toast.add({ title: 'GitHub', description: 'Login with GitHub' })
-  }
-}]
-
 const schema = z.object({
-  email: z.email('Invalid email'),
-  password: z.string('Password is required').min(8, 'Must be at least 8 characters')
+  email: z.email('Email invalide'),
+  password: z.string('Le mot de passe est requis').min(8, 'Doit contenir au moins 8 caractères')
 })
 
 type Schema = z.output<typeof schema>
@@ -75,13 +61,17 @@ const onSubmit = async (payload: FormSubmitEvent<Schema>) => {
     <UPageCard class="w-full max-w-md">
       <UAuthForm
         :schema="schema"
-        title="Login"
-        description="Enter your credentials to access your account."
+        title="Connexion"
+        description="Entrez vos identifiants pour accéder à votre compte."
         icon="i-lucide-user"
         :fields="fields"
-        :providers="providers"
         @submit="onSubmit"
-      />
+      >
+        <template #footer>
+          Pas encore de compte ?
+          <ULink to="/register" class="text-primary font-medium">S'inscrire</ULink>
+        </template>
+      </UAuthForm>
     </UPageCard>
   </div>
 </template>

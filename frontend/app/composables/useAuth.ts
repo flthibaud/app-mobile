@@ -52,6 +52,28 @@ export const useAuth = () => {
     }
   };
 
+  const register = async (form: {
+    firstname?: string;
+    lastname?: string;
+    username?: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+  }) => {
+    try {
+      const data = await $fetch<{ token: string; user: User }>(`${apiUrl}/api/register`, {
+        method: "POST",
+        body: form,
+      });
+      token.value = data.token;
+      user.value = data.user;
+      if (import.meta.client) localStorage.setItem("token", data.token);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   const fetchUser = async () => {
     if (!token.value) return;
     try {
@@ -96,6 +118,7 @@ export const useAuth = () => {
     token,
     authFetch,
     login,
+    register,
     logout,
     fetchUser,
     updateProfile,

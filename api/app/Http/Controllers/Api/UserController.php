@@ -32,6 +32,30 @@ class UserController extends Controller
         ]);
     }
 
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'firstname' => 'nullable|string|max:255',
+            'lastname'  => 'nullable|string|max:255',
+            'username'  => ['nullable', 'string', 'max:255', 'regex:/^[^.]+$/', 'unique:users,username'],
+            'email'     => 'required|email|unique:users,email',
+            'password'  => 'required|min:8|confirmed',
+        ], [
+            'username.regex' => 'Le pseudo ne peut pas contenir de point.',
+        ]);
+
+        $validated['password'] = Hash::make($validated['password']);
+
+        $user = User::create($validated);
+
+        $token = $user->createToken('mobile-token')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token
+        ], 201);
+    }
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();

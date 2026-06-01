@@ -1,12 +1,15 @@
 <script setup>
   const { token, user, fetchUser } = useAuth()
   const { start, stop } = useNotificationStream()
+  const route = useRoute()
+
+  const publicRoutes = ['/login', '/register']
 
   onMounted(async () => {
     if (token.value) {
       await fetchUser()
       if (user.value) start()
-    } else {
+    } else if (!publicRoutes.includes(route.path)) {
       navigateTo('/login')
     }
   })

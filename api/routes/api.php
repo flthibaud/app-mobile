@@ -26,6 +26,7 @@ Route::prefix('users/{user}')->group(function () {
     Route::get('/ads', [AdController::class, 'userAds']);
 });
 
+Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
