@@ -76,13 +76,19 @@ Capacitor emballe le frontend Nuxt dans une application Android. L'application �
 
 ### Lancer
 
-1. **Démarrer l'API + la base** (dans un terminal, à la racine du dépôt) :
+1. **Copier le .env.example** du frontend pour définir les variables d'environnement :
+
+   ```bash
+   cp frontend/.env.example frontend/.env
+   ```
+
+2. **Démarrer l'API + la base** (dans un terminal, à la racine du dépôt) :
 
    ```bash
    docker compose up --build db api
    ```
 
-2. **Construire l'app mobile et la lancer sur l'émulateur** (dans un second terminal) :
+3. **Construire l'app mobile et la lancer sur l'émulateur** (dans un second terminal) :
 
    ```bash
    cd frontend
@@ -92,7 +98,7 @@ Capacitor emballe le frontend Nuxt dans une application Android. L'application �
 
    > `npx cap run android` propose de choisir l'émulateur à démarrer. L'app s'ouvre ensuite automatiquement et se connecte à l'API.
 
-À chaque modification du frontend, relancer la commande de l'étape 2 pour reconstruire et réinstaller l'app.
+À chaque modification du frontend, relancer la commande de l'étape 3 pour reconstruire et réinstaller l'app.
 
 ---
 
